@@ -89,8 +89,53 @@ func (receiver Slice) Draw(img image.Image, x int, y int) error {
 	return nil
 }
 
+func (receiver Slice) Dye(c color.Color) error {
+	if nil == receiver {
+		return errNilReceiver
+	}
+
+	var r,g,b,a uint8
+	{
+		switch casted := c.(type) {
+		case rgba32.Slice:
+			r = casted[rgba32.OffsetRed]
+			g = casted[rgba32.OffsetGreen]
+			b = casted[rgba32.OffsetBlue]
+			a = casted[rgba32.OffsetAlpha]
+		default:
+			rr,gg,bb,aa := casted.RGBA()
+
+			r = uint8((rr*0xff)/0xffff)
+			g = uint8((gg*0xff)/0xffff)
+			b = uint8((bb*0xff)/0xffff)
+			a = uint8((aa*0xff)/0xffff)
+		}
+	}
+
+	for y:=0; y<Height; y++ {
+		for x:=0; x<Width; x++ {
+			receiver.set(x,y, r,g,b,a)
+		}
+	}
+
+	return nil
+}
+
 func (receiver Slice) PixOffset(x int, y int) int {
 	return y*(Width*Depth) + x*Depth
+}
+
+func (receiver Slice) set(x, y int, r, g, b, a uint8) {
+	if nil == receiver {
+		return
+	}
+
+	p := receiver.at(x,y)
+
+	p[rgba32.OffsetRed]   = r
+	p[rgba32.OffsetGreen] = g
+	p[rgba32.OffsetBlue]  = b
+	p[rgba32.OffsetAlpha] = a
 }
 
 func (receiver Slice) Set(x, y int, c color.Color) {
@@ -101,8 +146,6 @@ func (receiver Slice) Set(x, y int, c color.Color) {
 		return
 	}
 
-	p := receiver.at(x,y)
-
 	u32r, u32g, u32b, u32a := c.RGBA()
 
 	u8r := uint8((u32r*0xff)/0xffff)
@@ -110,8 +153,5 @@ func (receiver Slice) Set(x, y int, c color.Color) {
 	u8b := uint8((u32b*0xff)/0xffff)
 	u8a := uint8((u32a*0xff)/0xffff)
 
-	p[rgba32.OffsetRed]   = u8r
-	p[rgba32.OffsetGreen] = u8g
-	p[rgba32.OffsetBlue]  = u8b
-	p[rgba32.OffsetAlpha] = u8a
+	receiver.set(x,y, u8r, u8g, u8b, u8a)
 }
