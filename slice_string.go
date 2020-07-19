@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+// String returns frame serialized in “IMAGE:<base64-encoded-png>” format.
+//
+// The usefulness of this serialized format is, if you just output that on
+// the Go Playground — https://play.golang.org/ — then it will display it
+// as an image.
 func (receiver Slice) String() string {
 	var buffer strings.Builder
 
