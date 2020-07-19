@@ -5,6 +5,7 @@ import (
 
 	"image"
 	"image/color"
+	"image/draw"
 )
 
 type Slice []uint8
@@ -57,6 +58,35 @@ func (receiver Slice) Bounds() image.Rectangle {
 
 func (receiver Slice) ColorModel() color.Model {
 	return color.NRGBAModel
+}
+
+func (receiver Slice) Draw(img image.Image, x int, y int) error {
+	if nil == receiver {
+		return errNilReceiver
+	}
+
+	var rect image.Rectangle
+	{
+		bounds := img.Bounds()
+
+		width  := bounds.Max.X - bounds.Min.X
+		height := bounds.Max.Y - bounds.Min.Y
+
+		rect = image.Rectangle{
+			Min: image.Point{
+				X:x,
+				Y:y,
+			},
+			Max: image.Point{
+				X:x+width,
+				Y:y+height,
+			},
+		}
+	}
+
+	draw.Draw(receiver, rect, img, image.ZP, draw.Src)
+
+	return nil
 }
 
 func (receiver Slice) PixOffset(x int, y int) int {
