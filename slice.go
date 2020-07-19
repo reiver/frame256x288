@@ -89,6 +89,7 @@ func (receiver Slice) Draw(img image.Image, x int, y int) error {
 	return nil
 }
 
+// Dye changes the color of all the pixels / pels in this from to ‘color’.
 func (receiver Slice) Dye(c color.Color) error {
 	if nil == receiver {
 		return errNilReceiver
@@ -138,6 +139,10 @@ func (receiver Slice) set(x, y int, r, g, b, a uint8) {
 	p[rgba32.OffsetAlpha] = a
 }
 
+// Set helps Slice fit the Go built-in draw.Image interface.
+//
+// Set will change the color of the pixel / pel, in this frame,
+// at (‘x’,‘y’) to ‘color’.
 func (receiver Slice) Set(x, y int, c color.Color) {
 	if nil == receiver {
 		return
