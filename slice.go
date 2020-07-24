@@ -67,7 +67,7 @@ func (receiver Slice) Draw(img image.Image) error {
 
 	rect := img.Bounds()
 
-	draw.Draw(receiver, rect, img, rect.Min, draw.Src)
+	draw.Draw(receiver, rect, img, rect.Min, draw.Over)
 
 	return nil
 }
