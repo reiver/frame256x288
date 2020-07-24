@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestImageImage(t *testing.T) {
+func TestSlice_imageimage(t *testing.T) {
 
 	// THIS IS WHAT ACTUALLY MATTERS!
 	var x image.Image = frame256x288.Slice{}
